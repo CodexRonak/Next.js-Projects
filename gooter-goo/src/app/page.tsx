@@ -5,6 +5,7 @@ import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
 import FeatureCard from '@/components/ui/FeatureCard';
 import { MessageCircle, Shield, Users, Video, Zap } from 'lucide-react';
+import Footer from '@/components/ui/Footer';
 
 
 
@@ -16,7 +17,7 @@ const page = () => {
 
       <main className="flex-1 flex flex-col items-center px-4 py-16 sm:px-6 text-center gap-28">
         <div className="max-w-4xl space-y-8 relative">
-          {/* background gradient */}
+          {/* background linear */}
           <div className="absolute inset-0 -z-10 bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 rounded-3xl blur-3xl scale-150 opacity-60"></div>
           <div>
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400">
@@ -75,13 +76,13 @@ const page = () => {
           <div className="w-full max-w-6xl">
             {/* Section divider */}
             <div className="w-full flex items-center justify-center mb-16">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+              <div className="flex-1 h-px bg-linear-to-r from-transparent via-border to-transparent"></div>
 
               <div className="px-6">
                 <div className="w-2 h-2 rounded-full bg-primary/60"></div>
               </div>
 
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+              <div className="flex-1 h-px bg-linear-to-r from-transparent via-border to-transparent"></div>
             </div>
 
             <div className="text-center mb-16">
@@ -131,7 +132,7 @@ const page = () => {
           </div>
           {/* Enhanced CTA section */}
           <div className="w-full max-w-4xl">
-            <div className="bg-background rounded-2xl border bg-gradient-to-br from-primary/5 to-primary/10 p-12 text-center">
+            <div className="bg-background rounded-2xl border bg-linear-to-br from-primary/5 to-primary/10 p-12 text-center">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 Ready to transform your conversations?
               </h2>
@@ -174,6 +175,7 @@ const page = () => {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }
