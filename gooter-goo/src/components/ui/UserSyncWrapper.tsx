@@ -2,9 +2,11 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { api } from "../../../convex/_generated/api";
 import {LoadingSpinner} from "./LoadingSpinner";
+import streamClient from "@/lib/stream";
+import { createToken } from "../../../actions/createToken";
 
 const UserSyncWrapper = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoaded: isUserLoaded } = useUser();
@@ -13,36 +15,82 @@ const UserSyncWrapper = ({ children }: { children: React.ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Convex mutation
-  const upsertUser = useMutation(api.users.upsertUser);
+    const createOrUpdateUser = useMutation(api.users.upsertUser);
+    
+    const syncUser = useCallback(async () => {
+        if (!user?.id) return;
 
-  // Sync user when Clerk user is loaded
+        try {
+
+          setIsLoading(true);
+          setError(null)
+
+          const tokenProvider = async () => {
+            if (!user?.id) {
+              throw new Error("User is not authenticated");
+            }
+
+            const token = await createToken(user.id);
+            return token;
+          };
+            
+            // 1. Save user to Convex
+          await createOrUpdateUser({
+            userId: user.id,
+            name: user.fullName || user.firstName || user.emailAddresses[0]?.emailAddress || "Unknown User",
+            email: user.emailAddresses[0]?.emailAddress || "",
+            imageUrl: user.imageUrl || "",
+          });
+
+          await streamClient.connectUser(
+            {
+              id: user.id,
+              name:
+                user.fullName ||
+                user.firstName ||
+                user.emailAddresses[0]?.emailAddress ||
+                "Unknown User",
+              image: user.imageUrl || "",
+            }, tokenProvider
+          );
+          
+            
+        } catch (err: any) {
+         console.error("User sync failed:", err);
+         setError(err.message || "Failed to sync user data");
+        } finally {
+            setIsLoading(false);
+
+        }
+    }, [createOrUpdateUser, user]);
+      
+  const disconnectUser = useCallback(async () => {
+    try {
+      await streamClient.disconnectUser()
+    } catch (err) {
+      console.error ("Failed to disconnect user:" , err);
+    }
+  },[])
+
   useEffect(() => {
-    if (!isUserLoaded || !user) {
-      return;
+    if (!isUserLoaded) return;
+    if (user) {
+      syncUser();
+    }
+    else {
+      disconnectUser();
+      setIsLoading(false);
     }
 
-    const syncUser = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        await upsertUser({
-          userId: user.id,
-          name: user.fullName || user.firstName || "User",
-          email: user.primaryEmailAddress?.emailAddress || "",
-          imageUrl: user.imageUrl || "",
-        });
-      } catch (err: any) {
-        console.error("User sync failed:", err);
-        setError(err.message || "Failed to sync user data");
-      } finally {
-        setIsLoading(false);
+    // Cleanup function
+    return () => {
+      if(user) {
+        disconnectUser
       }
     };
-
-    syncUser();
-  }, [isUserLoaded, user, upsertUser]);
-
+    
+  }, [user, isUserLoaded, isLoading, disconnectUser]);
+  
   // Error State
   if (error) {
     return (
