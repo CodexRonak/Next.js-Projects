@@ -46,11 +46,13 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  render, // 👈 @base-ui/react button primitive 'asChild' ke badle 'render' element ka use karta hai polymorphing ke liye
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
       data-slot="button"
+      render={render} // 👈 FIXED: Ab dialog ya sidebar se aaya render element context bypass nahi karega
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
