@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Gooter-Goo — Real-time Chat & Video Calling App
 
-## Getting Started
+**Gooter-Goo** is a full-stack, feature-rich real-time communication platform built with Next.js, featuring instantaneous text messaging, group chat creations, and high-fidelity video calling. 
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- **🔒 Secure Authentication**: Powered by Clerk for seamless and secure user onboarding and authentication.
+- **💬 Real-time Text Messaging**: High-performance chat functionality powered by Stream Chat SDK.
+- **👥 Group Chat Management**: Easily search for users, select multiple members, and create named group conversations.
+- **📹 Seamless Video Calls**: In-app face-to-face video calling experience built with Stream Video SDK.
+- **⚡ Reactive Backend**: Instant user and chat synchronization handled globally by Convex.
+- **🎨 Modern UI/UX**: Designed using Tailwind CSS and Base UI components for a fully responsive, smooth, and accessible interface.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS, Base UI, Lucide Icons
+- **Authentication**: Clerk Auth
+- **Real-time Chat & Video**: Stream SDK (`stream-chat-react` & `@stream-io/video-react-sdk`)
+- **Database & Backend Logic**: Convex
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally:
+
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/YOUR_GITHUB_USERNAME/gooter-goo.git](https://github.com/YOUR_GITHUB_USERNAME/gooter-goo.git)
+cd gooter-goo
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Setup Environment Variables
+Create a .env.local file in the root directory and add your keys:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pub_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
+
+NEXT_PUBLIC_STREAM_API_KEY=your_stream_api_key
+STREAM_API_SECRET=your_stream_api_secret
+```
+
+### 4. Run the Development Server
+First, start the Convex backend runner in a separate terminal:
+
+```bash
+npx convex dev
+Then, run the Next.js development server:
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open http://localhost:3000 in your browser to see the application in action!
