@@ -3,7 +3,15 @@
 import React from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Channel, ChannelHeader, MessageInput, MessageList, Thread, useChatContext, Window } from "stream-chat-react";
+import {
+  Channel,
+  ChannelHeader,
+  MessageInput,
+  MessageList,
+  Thread,
+  useChatContext,
+  Window,
+} from "stream-chat-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/Button";
 import { LogOutIcon, VideoIcon } from "lucide-react";
@@ -15,13 +23,13 @@ function Dashboard() {
   const { setOpen } = useSidebar();
 
   const handleCall = () => {
-  if (!channel?.id) return; 
-  router.push(`/dashboard/video-call/${channel.id}`);
-  setOpen(false);
-  }
+    if (!channel?.id) return;
+    router.push(`/dashboard/video-call/${channel.id}`);
+    setOpen(false);
+  };
 
   const handleLeaveChat = async () => {
-    if (!channel || !user?.id){
+    if (!channel || !user?.id) {
       console.log("No active channel or user found");
       return;
     }
@@ -41,15 +49,15 @@ function Dashboard() {
     } catch (error) {
       console.error("Error leaving chat:", error);
     }
-  }
+  };
 
   return (
-    <div className="flex flex-col w-full flex-1">
+    <div className="flex flex-col w-full h-full">
       {channel ? (
-        <Channel>
-          <Window>
+        <Channel className="flex flex-col h-full">
+          <Window className="flex flex-col h-full">
             {/* Channel Top Header Section */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 border-b shrink-0">
               {channel.data?.member_count === 1 ? (
                 <ChannelHeader title="Everyone else has left this chat!" />
               ) : (
@@ -63,22 +71,26 @@ function Dashboard() {
                   Video Call
                 </Button>
 
-                <Button variant="outline" onClick={handleLeaveChat} className="text-red-500 hover:bg-red-600 hover:bg-red-50 dark:hover:bg-red-950">
+                <Button
+                  variant="outline"
+                  onClick={handleLeaveChat}
+                  className="text-red-500 hover:bg-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                >
                   <LogOutIcon className="w-4 h-4" />
                   Leave Chat
                 </Button>
               </div>
             </div>
-              <MessageList />
+            <MessageList className="flex-1 overflow-y-auto" />
 
-              <div className="sticky bottom-0 w-full">
-                <MessageInput/>
-              </div>
+            <div className="shrink-0 p-2 border-t">
+              <MessageInput />
+            </div>
           </Window>
           <Thread />
         </Channel>
       ) : (
-        <div className="flex flex-col items-center justify-center h-full min-h-[50vh]">
+        <div className="flex flex-col items-center justify-center h-full">
           <h2 className="text-2xl font-semibold text-muted-foreground mb-4">
             No chat selected
           </h2>

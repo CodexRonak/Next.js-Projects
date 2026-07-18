@@ -38,7 +38,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${roboto.variable} ${roboto.variable} h-full antialiased`}
     >
-      <body className={`${roboto.className} min-h-full flex flex-col`}>
+      <body className={`${roboto.className} h-full flex flex-col`}>
         <ClerkProvider
           signInFallbackRedirectUrl="/dashboard"
           signUpFallbackRedirectUrl="/dashboard"

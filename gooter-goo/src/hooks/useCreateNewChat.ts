@@ -1,6 +1,11 @@
 import streamClient from "@/lib/stream";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { upsertStreamUser } from "../../actions/upsertStreamUser";
 
 export const useCreateNewChat = () => {
+  const allConvexUsers = useQuery(api.users.getAllUsers) || [];
+
   const createNewChat = async ({
     members,
     created_by,
@@ -12,32 +17,20 @@ export const useCreateNewChat = () => {
   }) => {
     const isGroupChat = members.length > 2;
 
-    // Check for existing 1-on-1 chat
-    if (!isGroupChat) {
-      const existingChannels = await streamClient.queryChannels(
-        {
-          type: "messaging",
-          members: { $eq: members },
-        },
-        [{ created_at: -1 }], 
-        { limit: 1 }
-      );
-
-      if (existingChannels.length > 0) {
-        const channel = existingChannels[0];
-        const channelMembers = Object.keys(channel.state.members);
-        if (
-          channelMembers.length === 2 && 
-          members.length === 2 && 
-          members.every((member) => channelMembers.includes(member))
-        ) {
-          console.log("Existing 1-on-1 channel found:");
-          return channel;
-        }
+    // First: Upsert all members to StreamChat via server action
+    for (const memberId of members) {
+      // Find user in Convex to get name/image
+      const convexUser = allConvexUsers.find((u) => u.userId === memberId);
+      if (convexUser) {
+        await upsertStreamUser(
+          convexUser.userId,
+          convexUser.name,
+          convexUser.imageUrl,
+        );
       }
     }
 
-    // Create New Channel (Ab yeh function scope ke andar hai)
+    // Create New Channel
     const channelId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 
     try {
@@ -51,13 +44,14 @@ export const useCreateNewChat = () => {
       };
 
       if (isGroupChat) {
-        channelData.name = group_name || `Group Chat (${members.length} members)`; 
-    }
+        channelData.name =
+          group_name || `Group Chat (${members.length} members)`;
+      }
 
       const channel = streamClient.channel(
         isGroupChat ? "team" : "messaging",
         channelId,
-        channelData
+        channelData,
       );
 
       // Channel initialize aur event subscription
@@ -66,12 +60,11 @@ export const useCreateNewChat = () => {
       });
 
       return channel;
-
     } catch (error) {
       console.error("Error creating channel:", error);
-      throw error;    
+      throw error;
     }
   };
 
   return createNewChat;
-}; 
+};

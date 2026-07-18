@@ -36,13 +36,13 @@ export function NewChatDialog({ children }: NewChatDialogProps) {
   const { setActiveChannel } = useChatContext();
 
   const handleSelectUser = (users: Doc<"users">) => {
-    if (!selectedUsers.find((u) => u._id === users._id)) {
+    if (!selectedUsers.find((u) => u.userId === users.userId)) {
       setSelectedUsers((prev) => [...prev, users]);
     }
   };
 
   const removeUser = (userId: string) => {
-    setSelectedUsers((prev) => prev.filter((user) => user._id !== userId));
+    setSelectedUsers((prev) => prev.filter((user) => user.userId !== userId));
   };
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -59,7 +59,7 @@ export function NewChatDialog({ children }: NewChatDialogProps) {
 
     // ✅ FIXED: Backend API Object requirements ke anusar variables ko align kiya hai
     const channelName = await createNewChat({
-      members: [user?.id as string, ...selectedUsers.map((user) => user._id)],
+      members: [user?.id as string, ...selectedUsers.map((u) => u.userId)],
       created_by: user?.id as string, // camelCase se badal kar snake_case kiya
       group_name: isGroupChat ? groupName.trim() || undefined : undefined, // camelCase se badal kar snake_case kiya
     });
@@ -71,15 +71,15 @@ export function NewChatDialog({ children }: NewChatDialogProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={children} />
 
-      <DialogContent className="sm:max-w-125 max-h-[80vh] flex flex-col p-6">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-125 max-h-[80vh] flex flex-col p-6 overflow-hidden">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Start a New Chat</DialogTitle>
           <DialogDescription>
             Select users to start a new conversation with
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1 overflow-y-auto overflow-x-hidden">
           <UserSearch onSelectUser={handleSelectUser} className="w-full" />
 
           {/* Selected Users */}
@@ -116,7 +116,7 @@ export function NewChatDialog({ children }: NewChatDialogProps) {
 
                     <button
                       type="button"
-                      onClick={() => removeUser(user._id)}
+                      onClick={() => removeUser(user.userId)}
                       className="text-muted-foreground hover:text-destructive transition-colors p-1"
                     >
                       <XIcon className="h-4 w-4" />
@@ -154,7 +154,7 @@ export function NewChatDialog({ children }: NewChatDialogProps) {
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-shrink-0 mt-4">
           <Button
             variant="outline"
             type="button"

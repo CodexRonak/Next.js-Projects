@@ -19,7 +19,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import "stream-chat-react/dist/css/v2/index.css"
+import "stream-chat-react/dist/css/v2/index.css";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -30,28 +30,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/* Shadcn UI Sidebar */}
           <AppSidebar />
 
-          <SidebarInset>
+          <SidebarInset className="flex flex-col h-full">
             {/* Top Common Navbar / Header */}
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
-
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
             </header>
 
             {/* Content Injection Panel */}
-            <div className="flex flex-1 flex-col gap-4 p-4">
-              <div className="min-h-screen flex-1 rounded-xl bg-muted/50 p-6">
+            <div className="flex flex-1 flex-col p-4 pb-0 overflow-hidden">
+              <div className="flex-1 rounded-xl bg-muted/50 overflow-hidden flex flex-col">
                 {children}
               </div>
             </div>
